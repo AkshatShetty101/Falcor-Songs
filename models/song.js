@@ -1,9 +1,9 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var albumArt = new Schema({
-    imgarr:{
+    img:{
         type: mongoose.Schema.Types.ObjectId,
-        ref : 'albumArt'
+        ref : 'albumart'
     }
 });
 var songSchema = new Schema({

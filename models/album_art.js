@@ -5,7 +5,7 @@ var imageSchema = new Schema({
     data: String
 });
 var albumArtSchema = new Schema({
-    image : [imageSchema],
+    image : imageSchema,
     album : {
         type: String,
         required : true
@@ -14,5 +14,5 @@ var albumArtSchema = new Schema({
     {
         timestamps : true
 });
-var Pro = mongoose.model('albumArt',albumArtSchema);
+var Pro = mongoose.model('albumart',albumArtSchema);
 module.exports=Pro;
