@@ -9,9 +9,7 @@ router.use(bodyParser.urlencoded({ extended: false }));
 /* GET home page. */
 var model = new falcor.Model({
   cache: {
-    genreList: {
-
-    }
+    songList :[]
   }
 });
 
@@ -47,7 +45,7 @@ router.post('/addSong', function (request, response) {
         if (err)
           response.json(err);
         else {
-          files.song.mv('./static/songs/'+files.song.name, function(err) {
+          files.song.mv('./static/songs/'+body.name+".mp3", function(err) {
             if (err)
               return response.status(500).send(err);
             response.send('File uploaded!');
@@ -63,6 +61,22 @@ router.post('/addSong', function (request, response) {
 });
 
 router.get('/', async (req, res) => {
+  songs.find({},{_id:0,name:1,artist:1,albumArt:1,album:1,yearOfRelease:1,genre:1},function(err,result){
+    if (err)
+    {
+      res.status(500).send(err);
+    }
+    else
+    {
+      var l = result
+      console.log(l)
+      model.setValue('songList',l).then(function(value){
+        model.get('songList[0]').then(function(json){
+          res.json(json);
+        });
+      });
+    }
+  });
   // test.find({},{name:1},function(err,data){
   //   console.log(data);
   //   var mod=[]
