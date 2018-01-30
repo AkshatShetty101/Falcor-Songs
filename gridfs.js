@@ -1,3 +1,5 @@
+module.exports = exports = {};
+
 exports.writeFile=function(req,res) {
     var Mongoose = require('mongoose').Mongoose;
     var gridfs = require('gridfs-stream');
