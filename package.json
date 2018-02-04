@@ -1,9 +1,10 @@
 {
-  "name": "falcor-example",
-  "version": "0.0.0",
-  "private": true,
+  "name": "falcor-songs",
+  "version": "1.0.0",
+  "private": false,
   "scripts": {
-    "start": "node .\\bin\\www"
+    "start": "node .\\bin\\www",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "body-parser": "~1.17.1",
@@ -20,5 +21,27 @@
   },
   "devDependencies": {
     "@angular/cli": "^1.6.7"
-  }
+  },
+  "engines": {
+    "node": "8.9.4"
+  },
+  "homepage": "https://github.com/AkshatShetty101/Falcor-Songs",
+  "contributors": [
+    "Akshat Shetty <akshatshetty2908@gmail.com> (https://github.com/AkshatShetty101)",
+    "Nisheet Sinvhal <nisheet1.sinvhal@gmail.com> (https://github.com/ashniu123)"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AkshatShetty101/Falcor-Songs/issues"
+  },
+  "keywords": [
+    "MongoDB",
+    "NodeJS",
+    "FalcorJS"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AkshatShetty101/Falcor-Songs.git"
+  },
+  "main": "app.js"
 }
