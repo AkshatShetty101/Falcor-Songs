@@ -13,10 +13,16 @@ var model = new falcor.Model({
   }
 });
 
+router.get('/getModel',function(req,res){
+  model.get('songList').then(function(json){
+    console.log(json);
+    res.send(json.json);
+  });
+});
 
-router.post('/addSong', function (request, response) {
-  var body = request.body;
-  var files = request.files;
+router.post('/addSong', function (req, res) {
+  var body = req.body;
+  var files = req.files;
   console.log(body);
   console.log(files);
   var img = {
@@ -28,7 +34,7 @@ router.post('/addSong', function (request, response) {
   }
   albumArt.findOneAndUpdate({ album: body.album }, img, { new: true, upsert: true }, function (err, img_result) {
     if(err){
-      response.json(err);
+      res.json(err);
     }
     else
     {
@@ -43,12 +49,12 @@ router.post('/addSong', function (request, response) {
       };
       songs.create(data, function (err, result) {
         if (err)
-          response.json(err);
+          res.json(err);
         else {
           files.song.mv('./static/songs/'+body.name+".mp3", function(err) {
             if (err)
-              return response.status(500).send(err);
-            response.send('File uploaded!');
+              return res.status(500).send(err);
+            res.send('File uploaded!');
             console.log("done!");
           });
         }
@@ -56,8 +62,6 @@ router.post('/addSong', function (request, response) {
     
     }
     });
-
-  // files.song.mv(function('./Songs/'))
 });
 
 router.get('/', async (req, res) => {
@@ -68,9 +72,8 @@ router.get('/', async (req, res) => {
     }
     else
     {
-      var l = result
-      console.log(l)
-      model.setValue('songList',l).then(function(value){
+      console.log(result)
+      model.setValue('songList',result).then(function(value){
         model.get('songList[0]').then(function(json){
           res.json(json);
         });

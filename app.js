@@ -1,4 +1,5 @@
-  var express = require('express');
+var express = require('express'),
+    cors = require('cors');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -8,10 +9,10 @@ var fileupload = require('express-fileupload');
 
 var index = require('./routes/index');
 var app = express();
-
+app.use(cors());
 // view engine setup
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'jade');
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 var mongoose = require('mongoose');
 var url = "mongodb://localhost:27017/FalcorSongs";
 mongoose.connect(url);
