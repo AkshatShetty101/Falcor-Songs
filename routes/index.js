@@ -3,17 +3,10 @@ var express = require('express');
 var router = express.Router();
 var songs = require('../models/song');
 var albumArt = require('../models/album_art');
-var falcor = require('falcor');
 var bodyParser = require('body-parser');
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended: false}));
-
-var model = new falcor.Model({
-    cache: {
-        songList: []
-    }
-});
 
 router.get('/getModel',function(req,res){
   model.get('songList').then(function(json){

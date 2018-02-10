@@ -8,6 +8,14 @@ var bodyParser = require('body-parser');
 var fileupload = require('express-fileupload');
 var mongoose = require('mongoose');
 
+global.falcor = require('falcor');
+global.model = new falcor.Model({
+    cache: {
+        temp: [],
+        songList: []
+    }
+});
+
 var app = express();
 app.use(cors());
 // view engine setup
