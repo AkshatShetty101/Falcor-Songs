@@ -1,8 +1,34 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: #111;
+  color:#fff9fbb0 
 }
 
-a {
-  color: #00B7FF;
+nav{
+  background-color: #21242e;
+}
+input{
+  background-color: #111 !important;
+  border-style: hidden !important;
+  border-bottom: 1px solid rgba(255,255,255,.15) !important;
+  color:whitesmoke !important;
+  -webkit-appearance: none !important;
+}
+a{
+  color:#fff9fbb0
+  
+}
+.active {
+  color: antiquewhite;
+}
+input:focus {
+  outline-color: #ff3c00 !important;
+}
+.special,.special:hover{
+  color: #ff3c00
+}
+a:hover{
+  color: #ff3c00
+  
 }

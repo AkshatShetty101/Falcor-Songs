@@ -1,0 +1,11 @@
+{
+    "name": "resources",
+    "description": "for bootstrap and stuff",
+    "authors": "Akshat Shetty",
+    "version": "1.0.0",
+    "dependencies": {
+        "bootstrap": "4.0.0",
+        "popper.js": "1.12.9",
+        "jquery": "3.0.0"
+    }
+}

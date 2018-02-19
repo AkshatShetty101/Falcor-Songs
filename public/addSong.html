@@ -1,26 +1,98 @@
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Add Song</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Surveillance System | Dashboard</title>
+    <!-- Bootstrap core CSS-->
+    <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
 </head>
-<body>
-    <form action="/addSong" method="post" name="adds" enctype="multipart/form-data">
-        <label>Add Song:&nbsp;<input type="file" name="song"></label><br/><br/>
-        <label>Song name:&nbsp;<input name="name" type="text"></label><br/><br/>
-        <label>Artist name:&nbsp;<input name="artist" type="text"></label><br/><br/>
-        <label>Album name:&nbsp;<input name="album" type="text"></label><br/><br/>
-        <label>Add Album Art:&nbsp;<input type="file" name="img"></label><br/><br/>
-        <label>Genre:&nbsp;<select name="genre">
-            <option value="0" selected disabled>Select Genre</option>
-            <option value="Pop">Pop</option>
-            <option value="Rap">Rap</option>
-            <option value="R&B">R&B</option>
-            <option value="Instrumental">Instrumental</option>
-        </select></label><br/><br/>
-        <label>Year of Release:&nbsp;<input type="text" name="year"></label><br/><br/>
-        <input type="submit">
-    </form>
+
+<body class="fixed-nav sticky-footer" id="page-top">
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
+        <a class="navbar-brand special" href="#">Falcor Songs</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+            aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
+                    <a class="nav-link" href="home.html">
+                        <span class="nav-link-text">Home</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
+                    <a class="nav-link active" href="#">
+                        <span class="nav-link-text ">Add Songs</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container-fluid h-100">
+        <div class="rol mt-5">
+            <div class="col-12">
+                <form action="/addSong" method="post" name="adds" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Add Song:&nbsp;
+                            <input class="mydiv form-control" type="file" name="song">
+                        </label>
+                        <br/>
+                        <br/>
+                        <label>Song name:&nbsp;
+                            <div class="mydiv">
+                                    <input class="form-control" name="name" type="text">
+                            </div> 
+                        </label>
+                        <br/>
+                        <br/>
+                        <label>Artist name:&nbsp;
+                            <input class="form-control" name="artist" type="text">
+                        </label>
+                        <br/>
+                        <br/>
+                        <label>Album name:&nbsp;
+                            <input class="form-control" name="album" type="text">
+                        </label>
+                        <br/>
+                        <br/>
+                        <label>Add Album Art:&nbsp;
+                            <input class="form-control" type="file" name="img">
+                        </label>
+                        <br/>
+                        <br/>
+                        <label>Genre:&nbsp;
+                            <select class="form-control" name="genre">
+                                <option value="0" selected disabled>Select Genre</option>
+                                <option value="Pop">Pop</option>
+                                <option value="Rap">Rap</option>
+                                <option value="R&B">R&B</option>
+                                <option value="Instrumental">Instrumental</option>
+                            </select>
+                        </label>
+                        <br/>
+                        <br/>
+                        <label>Year of Release:&nbsp;
+                            <input type="text" name="year">
+                        </label>
+                        <br/>
+                        <br/>
+                        <input type="submit">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- Bootstrap core JavaScript-->
+        <script src="node_modules/jquery/dist/jquery.js"></script>
+        <script src="node_modules/popper.js/dist/popper.js"></script>
+        <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
 </body>
+
 </html>
