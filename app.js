@@ -6,7 +6,6 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var fileupload = require('express-fileupload');
-var mongoose = require('mongoose');
 
 global.falcor = require('falcor');
 global.model = new falcor.Model({
@@ -22,12 +21,6 @@ app.use(cors());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-mongoose.connect("mongodb://localhost:27017/FalcorSongs");
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'Connection Error'));
-db.once('open', function () {
-    console.log("Connection Established!");
-});
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
