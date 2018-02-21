@@ -39,6 +39,9 @@
     <div class="container-fluid h-100">
         <div class="rol mt-5">
             <div class="col-12">
+                <div id="songList">
+
+                </div>
                 home!
             </div>
         </div>
@@ -46,11 +49,29 @@
         <script src="node_modules/jquery/dist/jquery.js"></script>
         <script src="node_modules/popper.js/dist/popper.js"></script>
         <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
+        <script type="text/javascript" src="dist/falcor.browser.js"></script>
+        <script type="text/javascript" src="dist/XMLHttpSource.js"></script>
         <script>
+
+            var baseUrl = 'localhost:3000';
+            var model = new falcor.Model({
+            });
             $(document).ready(function () {
                 console.log("ready!");
-            });
-
+                $.get("/load", function (data, status) {
+                    console.log(data);
+                    model.set({ path: ["songList"], value: data.songList }, { path: ["imgList"], value: data.imgList }).then(function (value) {
+                        $.each(data.songList, function (key, value) {
+                            console.log(key);
+                            model.getValue("songList["+parseInt(key)+"]").then(function (value) {
+                                var e = $('<div> ' + JSON.stringify(value) + '</div>');
+                                $('#songList').append(e);
+                                e.attr('id', key);
+                            });
+                        });
+                    });
+                });
+            });        
         </script>
 </body>
 

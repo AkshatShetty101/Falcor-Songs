@@ -1,16 +1,12 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var albumArt = new Schema({
-    img:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref : 'albumart'
-    }
-});
-
 var songSchema = new Schema(
     {
-        albumArt : albumArt,
+        albumArt : {
+            type: mongoose.Schema.Types.ObjectId,
+            ref : 'albumart'
+        },
         name: {
             type: String,
             required: true
