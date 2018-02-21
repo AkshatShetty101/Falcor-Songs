@@ -42,7 +42,6 @@
                 <div id="songList">
 
                 </div>
-                home!
             </div>
         </div>
         <!-- Bootstrap core JavaScript-->
@@ -54,22 +53,25 @@
         <script>
 
             var baseUrl = 'localhost:3000';
+            var $ref = falcor.Model.ref;
             var model = new falcor.Model({
+                source: new falcor.HttpDataSource('/model.json')
+                // cache: {
+                //     temp: [
+                //         {
+                //             name: "1",
+                //             rating: "2"
+                //         },
+                //         $ref("temp[0]")
+                //     ],
+                //     songList: [],
+                //     imgList: []
+                // }
             });
             $(document).ready(function () {
                 console.log("ready!");
-                $.get("/load", function (data, status) {
-                    console.log(data);
-                    model.set({ path: ["songList"], value: data.songList }, { path: ["imgList"], value: data.imgList }).then(function (value) {
-                        $.each(data.songList, function (key, value) {
-                            console.log(key);
-                            model.getValue("songList["+parseInt(key)+"]").then(function (value) {
-                                var e = $('<div> ' + JSON.stringify(value) + '</div>');
-                                $('#songList').append(e);
-                                e.attr('id', key);
-                            });
-                        });
-                    });
+                model.getValue(["songList","0","name"]).then(function(data){
+                    console.log(JSON.stringify(data,null,4));
                 });
             });        
         </script>

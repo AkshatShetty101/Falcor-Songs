@@ -74,9 +74,9 @@ router.get('/', function (req, res) {
 });
 
 router.get('/load',function(req,res){
-    model.get(['songList'],['imgList']).then(function (json) {
-        console.log(JSON.stringify(json.json,null,2));
-        res.json(json.json);
+    model.get(['songList']).then(function (json) {
+        console.log(JSON.stringify(json,null,2));
+        res.json(json);
     });
 });
 

@@ -9,6 +9,7 @@ var fileupload = require('express-fileupload');
 var mongoose = require('mongoose');
 var songs = require('./models/song');
 var album_art = require('./models/album_art');
+var falcorExpress  = require('falcor-express');
 var async = require('async');
 global.falcor = require('falcor');
 global.model = new falcor.Model({
@@ -34,6 +35,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/model.json',falcorExpress.dataSourceRoute(function(req,res){
+    return model.asDataSource();
+}));
 
 app.use('/', require('./routes/index'));
 
@@ -68,7 +72,7 @@ async function sync() {
     try {
         const res = await syncModel();
         console.log("Sync successful!")
-        console.log(res);
+        // console.log(res);
     } catch (err) {
         console.log("Error:" + err);
     }
@@ -103,7 +107,7 @@ function syncModel() {
                                 name:val.name,
                                 artist:val.artist,
                                 album:val.album,
-                                albumArt: [$ref("imgList["+i+"]")]
+                                albumArt: $ref("imgList["+i+"]")
                             });
                             flag=1;
                             break;
@@ -117,7 +121,7 @@ function syncModel() {
                             name:val.name,
                             artist:val.artist,
                             album:val.album,
-                            albumArt: [$ref("imgList["+(imgList.length-1)+"]")]
+                            albumArt: $ref("imgList["+(imgList.length-1)+"]")
                         });
                     }
                         callback()
@@ -126,12 +130,12 @@ function syncModel() {
                             console.log("err:" + data);
                         }
                         else {
-                            console.log(imgList);
-                            model.set({ path: ["songList"], value: songList }, { path: ["imgList"], value: imgList }).then(function (value) {
+                            console.log(JSON.stringify(songList, null, 2));
+                            model.set({ paths:[ ["songList",{from:0,to:songList.length},["name","artist","album","albumArt"]]], jsonGraph:{ songList}}).then(function (value) {
                                 console.log(JSON.stringify(value, null, 2));
-                                model.get('songList').then(function (json) {
-                                    resolve(JSON.stringify(json, null, 2));
-                                });
+                                // model.get('songList').then(function (json) {
+                                //     resolve(JSON.stringify(json, null, 2));
+                                // });
                             });
 
                         }
