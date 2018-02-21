@@ -8,6 +8,46 @@ body {
 nav{
   background-color: #21242e;
 }
+
+.card{
+  background-color: #111 !important;
+  border-bottom: 1px solid rgba(255,255,255,.15) !important;
+}
+
+@media (min-width: 992px) {
+  .card-columns {
+      column-count: 2;
+  }
+  
+}
+
+@media (min-width: 768px) {
+  .card-columns {
+      column-count: 2;}}
+
+@media (min-width: 512px) {
+  .card-columns {
+      column-count: 2;
+  }
+  
+}
+
+@media (min-width: 1400px) {
+  .card-columns {
+      column-count: 2;
+  }
+}
+
+@media (min-width: 1500px) {
+  .card-columns {
+      column-count: 3 !important; }
+}
+
+.card-img-top{
+  display: block;
+  max-width:200px;
+  height: auto;
+}
 input{
   background-color: #111 !important;
   border-style: hidden !important;

@@ -9,7 +9,7 @@ var fileupload = require('express-fileupload');
 var mongoose = require('mongoose');
 var songs = require('./models/song');
 var album_art = require('./models/album_art');
-var falcorExpress  = require('falcor-express');
+var falcorExpress = require('falcor-express');
 var async = require('async');
 global.falcor = require('falcor');
 global.model = new falcor.Model({
@@ -35,7 +35,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/model.json',falcorExpress.dataSourceRoute(function(req,res){
+app.use('/model.json', falcorExpress.dataSourceRoute(function (req, res) {
     return model.asDataSource();
 }));
 
@@ -71,8 +71,7 @@ async function sync() {
     //Do all sync required here!
     try {
         const res = await syncModel();
-        console.log("Sync successful!")
-        // console.log(res);
+        console.log(res);
     } catch (err) {
         console.log("Error:" + err);
     }
@@ -98,48 +97,50 @@ function syncModel() {
                     id = val._id;
                     img_id = val.albumArt._id
                     var flag = -1
-                    console.log("--------------");
-                    console.log(imgList);
-                    console.log("--------------");
+                    // console.log("--------------");
+                    // console.log(imgList);
+                    // console.log("--------------");
                     for (i = 0; i < imgList.length; i++) {
                         if (imgList[i].album.toString() == val.album) {
                             songList.push({
-                                name:val.name,
-                                artist:val.artist,
-                                album:val.album,
-                                albumArt: $ref("imgList["+i+"]")
+                                name: val.name,
+                                artist: val.artist,
+                                album: val.album,
+                                albumArt: { $type: "ref", value: ["imgList", i,"image"] }
                             });
-                            flag=1;
+                            flag = 1;
                             break;
                         }
                     }
-                    if(flag==-1){
+                    if (flag == -1) {
                         imgList.push({
-                            album:val.albumArt.album                            
+                            album: val.albumArt.album,
+                            image:val.albumArt.image.data                            
                         });
-                            songList.push({
-                            name:val.name,
-                            artist:val.artist,
-                            album:val.album,
-                            albumArt: $ref("imgList["+(imgList.length-1)+"]")
+                        songList.push({
+                            name: val.name,
+                            artist: val.artist,
+                            album: val.album,
+                            albumArt: { $type: "ref", value: ["imgList", (imgList.length-1),"image"] }
                         });
                     }
-                        callback()
-                    }, function(data) {
-                        if (data) {
-                            console.log("err:" + data);
-                        }
-                        else {
-                            console.log(JSON.stringify(songList, null, 2));
-                            model.set({ paths:[ ["songList",{from:0,to:songList.length},["name","artist","album","albumArt"]]], jsonGraph:{ songList}}).then(function (value) {
-                                console.log(JSON.stringify(value, null, 2));
-                                // model.get('songList').then(function (json) {
-                                //     resolve(JSON.stringify(json, null, 2));
-                                // });
+                    callback()
+                }, function (data) {
+                    if (data) {
+                        console.log("err:" + data);
+                    }
+                    else {
+                        songList.push({length:songList.length-1});
+                        // console.log(JSON.stringify(songList, null, 2));
+                            model.set({ paths: [["imgList", { from: 0, to: imgList.length },["album"]],
+                            ["songList","length"],
+                            ["songList", { from: 0, to: songList.length }, ["name", "artist", "album"]],
+                            ["songList", { from: 0, to: songList.length }, ["albumArt"],["imgList", { from: 0, to: imgList.length },["image"]]]
+                            ], jsonGraph: { imgList,songList } }).then(function (value) {
+                               resolve("Sync successful");
                             });
-
-                        }
-                    });
+                    }
+                });
             }
         });
     });

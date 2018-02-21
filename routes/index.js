@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
 router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({ extended: false }));
+router.use(bodyParser.urlencoded({extended : false}));
 
 router.get('/getModel', function (req, res) {
     model.get('songList').then(function (json) {
@@ -17,12 +17,12 @@ router.get('/getModel', function (req, res) {
 });
 
 router.post('/addSong', function (req, res) {
-    mongoose.connect("mongodb://localhost:27017/FalcorSongs");
-    var db = mongoose.connection;
-    db.on('error', console.error.bind(console, 'Connection Error'));
-    db.once('open', function () {
-        console.log("Connection Established!");
-    });
+    // mongoose.connect("mongodb://localhost:27017/FalcorSongs");
+    // var db = mongoose.connection;
+    // db.on('error', console.error.bind(console, 'Connection Error'));
+    // db.once('open', function () {
+    //     console.log("Connection Established!");
+    // });
     var body = req.body;
     var files = req.files;
     console.log(body);
@@ -30,7 +30,7 @@ router.post('/addSong', function (req, res) {
     var img = {
         image: {
             name: files.img.name,
-            data: files.img.data
+            data: files.img.data.toString('base64')
         },
         album: body.album
     };
@@ -59,6 +59,9 @@ router.post('/addSong', function (req, res) {
                         }
                         res.send('File uploaded!');
                         console.log("done!");
+                        db.close(function () {
+                            console.log('Mongoose connection disconnected');
+                        });                    
                     });
                 }
             });
@@ -74,7 +77,7 @@ router.get('/', function (req, res) {
 });
 
 router.get('/load',function(req,res){
-    model.get(['songList']).then(function (json) {
+    model.get('songList').then(function (json) {
         console.log(JSON.stringify(json,null,2));
         res.json(json);
     });
