@@ -39,7 +39,48 @@
     <div class="container-fluid h-100">
         <div class="rol mt-5">
             <div class="col-12">
+                All Songs
+            </div>
+        </div>
+        <div class="rol mt-5">
+            <div class="col-12">
                 <div id="songList" class="card-columns">
+                </div>
+            </div>
+            <div class="rol mt-5">
+                <div class="col-12">
+                    Songs By Genre:
+                    <div class="col-12 my-5">
+                        Rap:
+                    </div>
+                    <div class="col-12">
+                        <div id="rapList" class="card-columns">
+                        </div>
+                    </div>
+                    <div class="col-12 my-5">
+                        R&B:
+                    </div>
+                    <div class="col-12">
+                        <div id="rnbList" class="card-columns">
+                        </div>
+                    </div>
+                    <div class="col-12 my-5">
+                        Pop:
+                    </div>
+
+                    <div class="col-12 my-5">
+                        <div id="popList" class="card-columns">
+                        </div>
+                    </div>
+                    <div class="col-12 my-5">
+                        Instrumental:
+                    </div>
+
+                    <div class="col-12">
+                        <div id="instrumentalList" class="card-columns">
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -55,46 +96,97 @@
             var $ref = falcor.Model.ref;
             var model = new falcor.Model({
                 source: new falcor.HttpDataSource('/model.json')
-                // cache: {
-                //     temp: [
-                //         {
-                //             name: "1",
-                //             rating: "2"
-                //         },
-                //         $ref("temp[0]")
-                //     ],
-                //     songList: [],
-                //     imgList: []
-                // }
             });
+            var batchModel = model.batch();
             $(document).ready(function () {
-                model.getValue(["songList", "length"]).then(function (data) {
+                batchModel.getValue(["songList", "length"]).then(function (data) {
                     console.log(data);
-                    model.get(["songList", { from: 0, to: data }, "name"],
+                    batchModel.get(["songList", { from: 0, to: data }, "name"],
                         ["songList", { from: 0, to: data }, "album"],
+                        ["songList", { from: 0, to: data }, "genre"],
+                        ["songList", { from: 0, to: data }, "year"],
                         ["songList", { from: 0, to: data }, "artist"],
-                        ["songList", { from: 0, to: data }, "albumArt","image"],
+                        ["songList", { from: 0, to: data }, "albumArt", "image"],
                     ).then(function (val) {
                         console.log(val);
                         $.each(val.json.songList, function (key, value) {
-                            if(parseInt(key)<data){
+                            if (parseInt(key) < data) {
                                 // console.log(value);
-                            var e = `<div class="col-12"><div class="card " style="width: 18rem;">
-                            <img class="card-img-top" src="data:image/png;base64,`+value.albumArt+`" alt="Card image cap">
+                                var e = `<div class="col-12"><div class="card" style="width: 18rem;">
+                            <img class="card-img-top" src="data:image/png;base64,`+ value.albumArt + `" alt="Card image cap">
                             <div class="card-body">
                               <h5 class="card-title">`+ value.name + `</h5>
-                              <p class="card-text">Artist: `+value.artist+`</p>
-                              <p class="card-text">Album: `+value.album+`</p>
+                              <p class="card-text">`+ value.artist + `</p>
+                              <p class="card-text">`+ value.album + `</p>
+                              <p class="card-text">`+ value.year + `</p>
                             </div>
                           </div></div>`;
-                        //   console.log(e);
-                            $("#songList").append(e);
-                            // console.log(val);
+                                $("#songList").append(e);
+                                if (value.genre == "Rap") {
+                                    $("#rapList").append(e);
+
+                                }
+                                else if (value.genre == "R&B") {
+                                    $("#rnbList").append(e);
+
+                                }
+                                else if (value.genre == "Pop") {
+                                    $("#popList").append(e);
+
+                                }
+                                else {
+                                    $("#instrumentalList").append(e);
+
+                                }
                             }
                         });
                     });
                 });
-            });        
+                batchModel.getValue(["temp", "length"]).then(function (data) {
+                    console.log(data);
+                    batchModel.get(["temp", { from: 0, to: data }, "name"],
+                        ["temp", { from: 0, to: data }, "album"],
+                        ["temp", { from: 0, to: data }, "genre"],
+                        ["temp", { from: 0, to: data }, "year"],
+                        ["temp", { from: 0, to: data }, "artist"],
+                        ["temp", { from: 0, to: data }, "albumArt", "image"],
+                    ).then(function (val) {
+                        console.log(val);
+                        $.each(val.json.temp, function (key, value) {
+                            if (parseInt(key) <= data) {
+                                console.log(value);
+                                var e = `<div class="col-12"><div class="card " style="width: 18rem;">
+                            <img class="card-img-top" src="data:image/png;base64,`+ value.albumArt + `" alt="Card image cap">
+                            <div class="card-body">
+                              <h5 class="card-title">`+ value.name + ` (From Temp)</h5>
+                              <p class="card-text">`+ value.artist + `</p>
+                              <p class="card-text">`+ value.album + `</p>
+                              <p class="card-text">`+ value.year + `</p>
+                            </div>
+                          </div></div>`;
+                                $("#songList").append(e);
+                                if (value.genre == "Rap") {
+                                    $("#rapList").append(e);
+
+                                }
+                                else if (value.genre == "R&B") {
+                                    $("#rnbList").append(e);
+
+                                }
+                                else if (value.genre == "Pop") {
+                                    $("#popList").append(e);
+
+                                }
+                                else {
+                                    $("#instrumentalList").append(e);
+
+                                }
+                            }
+                        });
+                    });
+                });
+            })
+
         </script>
 </body>
 

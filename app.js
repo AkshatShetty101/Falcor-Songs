@@ -15,8 +15,8 @@ global.falcor = require('falcor');
 global.model = new falcor.Model({
     cache: {
         temp: [],
-        songList: [],
-        imgList: []
+    songList: [],
+    imgList: []
     }
 });
 global.$ref = falcor.Model.ref;
@@ -32,7 +32,7 @@ setInterval(sync, 600000);
 app.use(logger('dev'));
 app.use(fileupload());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/model.json', falcorExpress.dataSourceRoute(function (req, res) {
@@ -106,7 +106,9 @@ function syncModel() {
                                 name: val.name,
                                 artist: val.artist,
                                 album: val.album,
-                                albumArt: { $type: "ref", value: ["imgList", i,"image"] }
+                                genre: val.genre,
+                                year: val.yearOfRelease,
+                                albumArt: { $type: "ref", value: ["imgList", i, "image"] }
                             });
                             flag = 1;
                             break;
@@ -115,13 +117,15 @@ function syncModel() {
                     if (flag == -1) {
                         imgList.push({
                             album: val.albumArt.album,
-                            image:val.albumArt.image.data                            
+                            image: val.albumArt.image.data
                         });
                         songList.push({
                             name: val.name,
                             artist: val.artist,
                             album: val.album,
-                            albumArt: { $type: "ref", value: ["imgList", (imgList.length-1),"image"] }
+                            genre: val.genre,
+                            year: val.yearOfRelease,
+                        albumArt: { $type: "ref", value: ["imgList", (imgList.length - 1), "image"] }
                         });
                     }
                     callback()
@@ -130,15 +134,17 @@ function syncModel() {
                         console.log("err:" + data);
                     }
                     else {
-                        songList.push({length:songList.length-1});
+                        songList.push({ length: songList.length - 1 });
                         // console.log(JSON.stringify(songList, null, 2));
-                            model.set({ paths: [["imgList", { from: 0, to: imgList.length },["album"]],
-                            ["songList","length"],
-                            ["songList", { from: 0, to: songList.length }, ["name", "artist", "album"]],
-                            ["songList", { from: 0, to: songList.length }, ["albumArt"],["imgList", { from: 0, to: imgList.length },["image"]]]
-                            ], jsonGraph: { imgList,songList } }).then(function (value) {
-                               resolve("Sync successful");
-                            });
+                        model.set({
+                            paths: [["imgList", { from: 0, to: imgList.length }, ["album","image"]],
+                            ["songList", "length"],
+                            ["songList", { from: 0, to: songList.length }, ["name", "artist", "album","genre","year"]],
+                            ["songList", { from: 0, to: songList.length }, ["albumArt"], ["imgList", { from: 0, to: imgList.length }, ["image"]]]
+                            ], jsonGraph: { imgList, songList }
+                        }).then(function (value) {
+                            resolve("Sync successful");
+                        });
                     }
                 });
             }
