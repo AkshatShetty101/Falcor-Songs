@@ -10,13 +10,14 @@ var mongoose = require('mongoose');
 var songs = require('./models/song');
 var album_art = require('./models/album_art');
 var falcorExpress = require('falcor-express');
+
 var async = require('async');
 global.falcor = require('falcor');
 global.model = new falcor.Model({
     cache: {
         temp: [],
-    songList: [],
-    imgList: []
+        songList: [],
+        imgList: []
     }
 });
 global.$ref = falcor.Model.ref;
@@ -26,7 +27,7 @@ app.use(cors());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 sync();
-setInterval(sync, 600000);
+setInterval(sync, 20000);
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
@@ -70,6 +71,14 @@ async function sync() {
     });
     //Do all sync required here!
     try {
+        const out = await loadtemp();
+        if (out.source) {
+            const out1 = await emptyTemp(out.source, out.d);
+            console.log(out1);
+        }
+        else {
+            console.log(out);
+        }
         const res = await syncModel();
         console.log(res);
     } catch (err) {
@@ -81,6 +90,119 @@ async function sync() {
         });
     }
 }
+
+function loadtemp() {
+    return new Promise((resolve, reject) => {
+        model.getValue(["temp", "length"]).then(function (data) {
+            if (data > 0) {
+                model.get(["temp", { from: 0, to: data }, "name"],
+                    ["temp", { from: 0, to: data }, "album"],
+                    ["temp", { from: 0, to: data }, "genre"],
+                    ["temp", { from: 0, to: data }, "year"],
+                    ["temp", { from: 0, to: data }, "artist"],
+                    ["temp", { from: 0, to: data }, "albumArt", "image"],
+                ).then(function (val) {
+                    console.log(data);
+                    // console.log(JSON.stringify(val, null, 4));
+                    var source = val.json.temp;
+                    return resolve({
+                        source: source,
+                        d: data
+                    });
+                    // console.log(JSON.stringify(source[i].album, null, 2));
+                    // var i = 0
+                    // emptyTemp(source, data).then(function (data) {
+                    //     console.log(data);
+                    //     console.log("done!");
+                    // for (; i < data;) {
+                    //         emptyTemp(source, i)
+                    //         .then(function(data){
+                    //             i++;
+                    //         })
+                    //         .catch(function(err){
+                    //         return reject(err);
+                    //     });
+                    // }
+                    // console.log(i);
+                    // if(i==data){
+                    // }
+                    // async () => {
+                    //     console.log("In!!");
+                    //     try {
+                    //         var x = emptyTemp(source, data)
+                    //         console.log(x);
+                    //         resolve("loaded temp list");
+                    //     } catch (err) {
+                    //         console.log(err);
+                    //     }
+                    // };
+                    //     emptyTemp(source, data)
+                    //     .then(function(x){
+                    //         console.log(x);
+
+                    //     })
+                    //     .catch (function(err) {
+                    //     reject(err);
+                    // });
+
+                });
+            }
+            else {
+                return resolve("Temp list is empty");
+            }
+        });
+    });
+}
+
+function emptyTemp(source, d) {
+    console.log('reached!' + d);
+    return new Promise(function (resolve, reject) {
+        console.log('reached!' + d);
+        for (var i = 0; i < d; i++) {
+            img = {
+                album: source[i].album,
+                image: {
+                    name: source[i].name,
+                    data: source[i].albumArt.toString()
+                }
+            }
+            var data = {
+                name: source[i].name,
+                artist: source[i].artist,
+                album: source[i].album,
+                genre: source[i].genre,
+                yearOfRelease: source[i].year
+            };
+            album_art.findOneAndUpdate({ album: source[i].album }, img, { new: true, upsert: true }, function (err, img_result) {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    data["albumArt"] = img_result._id;
+                    console.log("ID: " + img_result._id);
+                    songs.create(data, function (err, result) {
+                        if (err) {
+                            reject(err);
+                        }
+                        else {
+                            console.log(data.name);
+                        }
+                    });
+                }
+            });
+        }
+        temp = [];
+        model.setValue(["temp"], temp).then(function (res) {
+            console.log(JSON.stringify(res, null, 2));
+            return resolve("Emptied temp");
+        });
+        // model.set({
+        //     paths: [["temp"]],
+        //     jsonGraph: { temp }
+        // })
+    });
+}
+
 
 function syncModel() {
     return new Promise(function (resolve, reject) {
@@ -125,7 +247,7 @@ function syncModel() {
                             album: val.album,
                             genre: val.genre,
                             year: val.yearOfRelease,
-                        albumArt: { $type: "ref", value: ["imgList", (imgList.length - 1), "image"] }
+                            albumArt: { $type: "ref", value: ["imgList", (imgList.length - 1), "image"] }
                         });
                     }
                     callback()
@@ -137,9 +259,9 @@ function syncModel() {
                         songList.push({ length: songList.length - 1 });
                         // console.log(JSON.stringify(songList, null, 2));
                         model.set({
-                            paths: [["imgList", { from: 0, to: imgList.length }, ["album","image"]],
+                            paths: [["imgList", { from: 0, to: imgList.length }, ["album", "image"]],
                             ["songList", "length"],
-                            ["songList", { from: 0, to: songList.length }, ["name", "artist", "album","genre","year"]],
+                            ["songList", { from: 0, to: songList.length }, ["name", "artist", "album", "genre", "year"]],
                             ["songList", { from: 0, to: songList.length }, ["albumArt"], ["imgList", { from: 0, to: imgList.length }, ["image"]]]
                             ], jsonGraph: { imgList, songList }
                         }).then(function (value) {
