@@ -152,10 +152,11 @@
                         ["temp", { from: 0, to: data }, "albumArt", "image"],
                     ).then(function (val) {
                         console.log(val);
-                        $.each(val.json.temp, function (key, value) {
-                            if (parseInt(key) <= data) {
-                                console.log(value);
-                                var e = `<div class="col-12"><div class="card " style="width: 18rem;">
+                        if (val) {
+                            $.each(val.json.temp, function (key, value) {
+                                if (parseInt(key) <= data) {
+                                    console.log(value);
+                                    var e = `<div class="col-12"><div class="card " style="width: 18rem;">
                             <img class="card-img-top" src="data:image/png;base64,`+ value.albumArt + `" alt="Card image cap">
                             <div class="card-body">
                               <h5 class="card-title">`+ value.name + ` (From Temp)</h5>
@@ -164,25 +165,27 @@
                               <p class="card-text">`+ value.year + `</p>
                             </div>
                           </div></div>`;
-                                $("#songList").append(e);
-                                if (value.genre == "Rap") {
-                                    $("#rapList").append(e);
+                                    $("#songList").append(e);
+                                    if (value.genre == "Rap") {
+                                        $("#rapList").append(e);
 
-                                }
-                                else if (value.genre == "R&B") {
-                                    $("#rnbList").append(e);
+                                    }
+                                    else if (value.genre == "R&B") {
+                                        $("#rnbList").append(e);
 
-                                }
-                                else if (value.genre == "Pop") {
-                                    $("#popList").append(e);
+                                    }
+                                    else if (value.genre == "Pop") {
+                                        $("#popList").append(e);
 
-                                }
-                                else {
-                                    $("#instrumentalList").append(e);
+                                    }
+                                    else {
+                                        $("#instrumentalList").append(e);
 
+                                    }
                                 }
-                            }
-                        });
+                            });
+
+                        }
                     });
                 });
             })
